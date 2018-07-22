@@ -28,7 +28,7 @@ for i in range(0, 1):
     # Load in data
     print('Decoding recording ' + str(i) + ' of ' + str(len(ecs)))
     exp = boc.get_ophys_experiments(experiment_container_ids=[ecs[i]['id']], stimuli=[stim_info.DRIFTING_GRATINGS])[0]
-    cells = boc.get_cell_specimens(experiment_container_ids=[ecs[i]['id']])
+    data_set = boc.get_ophys_experiment_data(exp['id'])
     cells = pd.DataFrame.from_records(cells)
     print("total cells: %d" % len(cells)) 
     

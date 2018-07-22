@@ -20,6 +20,10 @@ targeted_structures = boc.get_all_targeted_structures()
 cre_lines = boc.get_all_cre_lines()
 ecs = boc.get_experiment_containers(targeted_structures=['VISp'], cre_lines=['Emx1-IRES-Cre'])
 
+# Get all cell data
+all_cells = boc.get_cell_specimens()
+all_cells = pd.DataFrame.from_records(all_cells)
+
 # Loop through recordings
 for i in range(0, len(ecs)):
     # Get NWB file
@@ -28,24 +32,23 @@ for i in range(0, len(ecs)):
     print('Processing recording ' + str(exp['id']) + ' [' + str(i+1) + ' of ' + str(len(ecs)) + ']')
 
     # Get fluo traces
-    all_cell_ids = data_set.get_cell_specimen_ids()
-    time, dff_traces = data_set.get_dff_traces(cell_specimen_ids=all_cell_ids)
+    cell_ids = data_set.get_cell_specimen_ids()
+    time, dff_traces = data_set.get_dff_traces(cell_specimen_ids=cell_ids)
 
     # Get stimulus times
     stim_times = data_set.get_stimulus_table(stimulus_name='drifting_gratings')
 
     # Extract mean or max per trial per neuron
-    resp_mat = np.empty((len(stim_times), len(all_cell_ids)))
+    resp_mat = np.empty((len(stim_times), len(cell_ids)))
     for t in range(len(stim_times)):
-        for n in range(len(all_cell_ids)):
+        for n in range(len(cell_ids)):
             resp_mat[t,n] = resp_operation(dff_traces[n,range(stim_times.start[t],stim_times.end[t])])
             
-    # Get cell properties
-    cells = boc.get_cell_specimens(experiment_container_ids=[exp['id']])
-    cells = pd.DataFrame.from_records(cells)
+    # Get cell properties for this exp
+    cells = all_cells[all_cells['id'].isin(cell_ids)]
     
     # Save
     np.save('/home/guido/Projects/AllenBrainDecoding/boc/ophys_experiment_data/' + str(exp['id']), resp_mat)
     stim_times.to_pickle('/home/guido/Projects/AllenBrainDecoding/boc/ophys_experiment_data/' + str(exp['id']) + '.pkl')
-    stim_times.to_pickle('/home/guido/Projects/AllenBrainDecoding/boc/ophys_processed/' + str(exp['id']) + '_cells.pkl')
+    cells.to_pickle('/home/guido/Projects/AllenBrainDecoding/boc/ophys_processed/' + str(exp['id']) + '_cells.pkl')
 
