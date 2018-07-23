@@ -9,6 +9,10 @@ import allensdk.brain_observatory.stimulus_info as stim_info
 import numpy as np
 import pandas as pd
 
+# Datasets to import
+areas = ['VISp']
+crelines = ['Emx1-IRES-Cre', 'Cux2-CreERT2']
+
 # What feature to extract from fluorescence trace during stimulus
 resp_operation = np.mean
 
@@ -18,7 +22,7 @@ boc = BrainObservatoryCache(manifest_file='boc/manifest.json')
 # Get experiment containers
 targeted_structures = boc.get_all_targeted_structures()
 cre_lines = boc.get_all_cre_lines()
-ecs = boc.get_experiment_containers(targeted_structures=['VISp'], cre_lines=['Emx1-IRES-Cre'])
+ecs = boc.get_experiment_containers(targeted_structures=areas, cre_lines=crelines)
 
 # Get all cell data
 all_cells = boc.get_cell_specimens()
@@ -45,7 +49,7 @@ for i in range(0, len(ecs)):
             resp_mat[t,n] = resp_operation(dff_traces[n,range(stim_times.start[t],stim_times.end[t])])
             
     # Get cell properties for this exp
-    cells = all_cells[all_cells['id'].isin(cell_ids)]
+    cells = all_cells[all_cells['cell_specimen_id'].isin(cell_ids)]
     
     # Save
     np.save('/home/guido/Projects/AllenBrainDecoding/boc/ophys_experiment_data/' + str(exp['id']), resp_mat)

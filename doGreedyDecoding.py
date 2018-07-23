@@ -15,7 +15,8 @@ import matplotlib.pyplot as plt
 # Settings
 num_splits = 5
 temp_freq = 1
-cre_line = 'Emx1-IRES-Cre'
+# cre_line = 'Emx1-IRES-Cre'
+cre_line = 'Cux2-CreERT2'
 area = 'VISp'
 
 # Get datasets

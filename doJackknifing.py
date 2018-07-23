@@ -16,7 +16,8 @@ num_splits = 5
 group_size = 15
 num_it = 500
 temp_freq = 1
-cre_line = 'Emx1-IRES-Cre'
+# cre_line = 'Emx1-IRES-Cre'
+cre_line = 'Cux2-CreERT2'
 area = 'VISp'
 
 # Set up decoder
@@ -47,8 +48,8 @@ for i in range(0, len(ecs)):
     # Load in data
     print('Decoding recording ' + str(i) + ' of ' + str(len(ecs)))
     exp = boc.get_ophys_experiments(experiment_container_ids=[ecs[i]['id']], stimuli=[stim_info.DRIFTING_GRATINGS])[0]
-    resp_mat = np.load('/home/guido/Projects/Orient/boc/ophys_experiment_data/' + str(exp['id']) + '.npy')
-    stim_data = pd.read_pickle('/home/guido/Projects/Orient/boc/ophys_experiment_data/' + str(exp['id']) + '.pkl')
+    resp_mat = np.load('/home/guido/Projects/AllenBrainDecoding/boc/ophys_experiment_data/' + str(exp['id']) + '.npy')
+    stim_data = pd.read_pickle('/home/guido/Projects/AllenBrainDecoding/boc/ophys_experiment_data/' + str(exp['id']) + '.pkl')
 
     # Select trials
     decode_ori = np.array(stim_data.orientation[(pd.notnull(stim_data.orientation)) & (stim_data.temporal_frequency == temp_freq)])
