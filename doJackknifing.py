@@ -65,7 +65,7 @@ for i in range(0, len(ecs)):
             perf_excl = bayesian_decoding(decode_resp, decode_ori, neurons[1:len(neurons)])
             contr_mat[j,n] = group_size*perf_all-(group_size-1)*perf_excl
     contr = np.mean(contr_mat, axis=0)
-    np.save('/home/guido/Projects/Orient/boc/ophys_processed/' + str(exp['id']) + '_neuron_contribution', contr)
+    np.save('/home/guido/Projects/AllenBrainDecoding/boc/ophys_processed/' + str(exp['id']) + '_neuron_contribution', contr)
 
 
 
