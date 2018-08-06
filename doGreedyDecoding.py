@@ -25,7 +25,7 @@ ecs = boc.get_experiment_containers(targeted_structures=area, cre_lines=cre_line
 
 greedy_perf = []
 for i in range(0, len(ecs)):
-# for i in range(0, 1):
+# for i in range(1, 2):
     # Load in data
     print('Decoding recording ' + str(i+1) + ' of ' + str(len(ecs)))
     exp = boc.get_ophys_experiments(experiment_container_ids=[ecs[i]['id']], stimuli=[stim_info.DRIFTING_GRATINGS])[0]
@@ -42,21 +42,22 @@ for i in range(0, len(ecs)):
     sort_mat = np.flip(decode_resp[:,sort_ind], 1)
     
     # Loop over neurons starting with the best
-    perf = np.empty([len(sort_mat[0]), 1])
-    for n in range(2, len(sort_mat[0])):
+    perf = []
+    for n in range(1, len(sort_mat[0])):
         neurons = np.array(range(n))
-        perf[n] = bayesian_decoding(sort_mat, decode_ori, neurons, num_splits)
+        n_perf = bayesian_decoding(sort_mat, decode_ori, neurons, num_splits)
+        perf = np.append(perf, n_perf)
     greedy_perf.append([perf])
 
 # Plot results
 for i in range(len(greedy_perf)):
     this_perf = np.squeeze(np.array(greedy_perf[i]))
-    plt.plot(range(2,len(this_perf)+2), this_perf)
+    plt.plot(range(1,len(this_perf)+1), this_perf)
 plt.ylabel('Decoding performance')
 plt.xlabel('Neurons sorted by best')
 
 # plt.savefig('/home/guido/Projects/AllenBrainDecoding/Plots/BayesianDecoding/GreedyDecoding_' + cre_line + '_' + area)
-plt.savefig('/home/guido/Projects/AllenBrainDecoding/Plots/BayesianDecoding/GreedyDecoding_' + area)
+plt.savefig('/home/guido/Projects/AllenBrainDecoding/Plots/BayesianDecoding/GreedyDecoding_' + area[0])
 plt.show()
         
         
