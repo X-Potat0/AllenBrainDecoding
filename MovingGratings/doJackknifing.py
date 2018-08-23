@@ -9,12 +9,14 @@ import allensdk.brain_observatory.stimulus_info as stim_info
 import numpy as np
 import pandas as pd
 from func_definePath import get_path
-from func_Decoders import bayesian_decoding
+from func_Decoders import bayesian_decoding, lda_classification
 from os.path import isfile, join
 
 # Settings
 num_splits = 5
 group_size = 15
+decoder = lda_classification
+str_decoder = 'lda_classification'
 num_it = 500
 temp_freq = 1
 # cre_line = 'Emx1-IRES-Cre'
@@ -31,7 +33,7 @@ for i in range(0, len(ecs)):
     # Load in data
     exp = boc.get_ophys_experiments(experiment_container_ids=[ecs[i]['id']], stimuli=[stim_info.DRIFTING_GRATINGS])[0]
     print('Decoding recording ' + str(exp['id']) + ' [' + str(i+1) + ' of ' + str(len(ecs)) + ']')
-    if isfile(join(root_path, 'boc/ophys_processed/', str(exp['id']) + '_neuron_contribution.npy')):
+    if isfile(join(root_path, 'boc/ophys_processed/', str(exp['id']) + '_' + str_decoder + '.npy')):
         print('Contribution file found, skipping..')
         pass
     else:        
@@ -52,7 +54,7 @@ for i in range(0, len(ecs)):
                 perf_excl = bayesian_decoding(decode_resp, decode_ori, neurons[1:len(neurons)], num_splits)
                 contr_mat[j,n] = group_size*perf_all-(group_size-1)*perf_excl
         contr = np.mean(contr_mat, axis=0)
-        np.save(join(root_path, 'boc/ophys_processed/', str(exp['id']) + '_neuron_contribution'), contr)
+        np.save(join(root_path, 'boc/ophys_processed/', str(exp['id']) + '_' + str_decoder), contr)
 
 
 

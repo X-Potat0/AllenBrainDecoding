@@ -14,7 +14,7 @@ areas = ['VISp']
 crelines = ['Emx1-IRES-Cre', 'Cux2-CreERT2']
 
 # What feature to extract from fluorescence trace during stimulus
-resp_operation = np.mean
+resp_operation = np.max
 
 # Get manifest json file
 boc = BrainObservatoryCache(manifest_file='boc/manifest.json')
@@ -31,7 +31,7 @@ all_cells = pd.DataFrame.from_records(all_cells)
 # Loop through recordings
 for i in range(0, len(ecs)):
     # Get NWB file
-    exp = boc.get_ophys_experiments(experiment_container_ids=[ecs[i]['id']], stimuli=[stim_info.DRIFTING_GRATINGS])[0]
+    exp = boc.get_ophys_experiments(experiment_container_ids=[ecs[i]['id']], stimuli=[stim_info.STATIC_GRATINGS])[0]
     data_set = boc.get_ophys_experiment_data(exp['id'])
     print('Processing recording ' + str(exp['id']) + ' [' + str(i+1) + ' of ' + str(len(ecs)) + ']')
 
@@ -40,7 +40,7 @@ for i in range(0, len(ecs)):
     time, dff_traces = data_set.get_dff_traces(cell_specimen_ids=cell_ids)
 
     # Get stimulus times
-    stim_times = data_set.get_stimulus_table(stimulus_name='drifting_gratings')
+    stim_times = data_set.get_stimulus_table(stimulus_name='static_gratings')
 
     # Extract mean or max per trial per neuron
     resp_mat = np.empty((len(stim_times), len(cell_ids)))
